@@ -1,0 +1,7 @@
+virtualenv/
+.vscode/
+*.swp
+__pycache__/
+bpz_wiki.egg-info/
+build/
+dist/
