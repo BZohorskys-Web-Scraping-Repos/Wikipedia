@@ -28,6 +28,9 @@ def main():
         vcards = page_html.xpath('//table[contains(@class, "vcard")]')
         for card in vcards:
             card.getparent().remove(card)
+        infoboxes = page_html.xpath('//table[contains(@class, "infobox")]')
+        for infobox in infoboxes:
+            infobox.getparent().remove(infobox)
         paragraphs = page_html.xpath('//div[@id="toc"]/preceding::p')
         for paragraph in paragraphs:
             styles = paragraph.xpath('./descendant::style')
@@ -45,7 +48,7 @@ def main():
 
 def is_paragraph_empty(paragraph):
     return True if paragraph.strip() == '' else False
-    
+
 
 if __name__ == '__main__':
     main()
