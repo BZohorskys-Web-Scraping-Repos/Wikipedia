@@ -4,3 +4,4 @@ idna==2.10
 lxml==4.6.3
 requests==2.25.1
 urllib3==1.26.6
+wheel==0.36.2
