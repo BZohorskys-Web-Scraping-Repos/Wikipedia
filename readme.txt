@@ -20,7 +20,7 @@ Run Project
 -----------
     Activate virtual environment
     In the root directory:
-        python main.py <search argument>
+        python wiki.py <search argument>
 
 
 Build Project
@@ -32,7 +32,7 @@ Build Project
             > python setup.py develop
         An egg directory should have been created
         Test Tool
-            > <search argument>
+            > wiki <search argument>
 
     Create .tar.gz file which can be install with pip
     +++++++++++++++++++++++++++++++++++++++++++++++++
