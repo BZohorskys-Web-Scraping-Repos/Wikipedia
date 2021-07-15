@@ -19,7 +19,7 @@ def main():
         else:
             print('Error: Too many arguments provided.')
             return
-    
+
     query_string = sys.argv[1]
     search_url = ''.join([SITE, query_string])
     r = requests.get(search_url)
@@ -40,7 +40,7 @@ def main():
             if not is_paragraph_empty(paragraph_text):
                 print(f'{"".join(paragraph_text.rstrip())}\n')
 
-        user_response = input('Open wikipedia page or quite? (o/q): ')
+        user_response = input('Open wikipedia page or quit? (o/q): ')
         if user_response == 'o':
             webbrowser.open(search_url)
     else:
