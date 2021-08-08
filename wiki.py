@@ -73,7 +73,8 @@ def get_wiki_current_events():
         print('Topics in the News:')
         for idx, fact in enumerate(quick_facts):
             text = ''.join(fact.xpath('./descendant-or-self::*/text()'))
-            print(f'{TAB}{text}', end='\n\n')
+            print("\n".join(textwrap.wrap(text,TERMINAL_WIDTH,initial_indent=TAB*2, subsequent_indent=TAB)))
+            print()
         on_going_data = ''.join(on_going.xpath("./descendant-or-self::*/text()"))
         on_going_data = on_going_data.replace('\n','\n' + TAB)
         print(f'Ongoing: {on_going_data}')   
@@ -109,7 +110,9 @@ def get_nested_items_helper(branch, indent):
         for topic in topics:
             get_nested_items(topic, indent)
     else:
-        print(f"{TAB * indent}{''.join(branch.xpath( './descendant-or-self::*/text()'))}")
+        # print(f"{TAB * indent}{''.join(branch.xpath( './descendant-or-self::*/text()'))}")
+        print('\n'.join(textwrap.wrap(''.join(branch.xpath( './descendant-or-self::*/text()')), TERMINAL_WIDTH, initial_indent=TAB * (indent + 1), subsequent_indent=TAB * indent)))
+        input()
         
     
 
