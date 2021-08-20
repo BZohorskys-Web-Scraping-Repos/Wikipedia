@@ -34,20 +34,21 @@ def get_wiki_search(query_string):
         for infobox in infoboxes:
             infobox.getparent().remove(infobox)
         paragraphs = page_html.xpath('//div[@id="toc"]/preceding::p')
-        paragraph_text_list = [TAB]
+        paragraph_text_list = []
         for paragraph in paragraphs:
             styles = paragraph.xpath('./descendant::style')
             for junk_data in styles:
                 junk_data.getparent().remove(junk_data)
             paragraph_text = ''.join(paragraph.xpath('./descendant-or-self::*/text()'))
             if not is_paragraph_empty(paragraph_text):
-                paragraph_text_list.extend(paragraph_text.rstrip())
-                paragraph_text_list.append('\n\n' + TAB)
+                paragraph_text_list.append(TAB*2)
+                paragraph_text_list.extend(paragraph_text.strip())
+                paragraph_text_list.append('\n\n')
 
         paragraph_text_list.pop()
-        paragraph_text_list.extend(['\n\n', 'URL: ', 'https://' + urllib.parse.quote(search_url.replace('https://', ''))])
+        paragraph_text_list.extend(['\n\n', 'https://' + urllib.parse.quote(search_url.replace('https://', ''))])
         final = "".join(paragraph_text_list)
-        os.system(f'echo "{final}" | less')
+        os.system(f'echo "{final}" | vim - -R')
 
     else:
         print(f'Recieved {r.status_code} response code.')
