@@ -4,6 +4,7 @@ import webbrowser
 import logging
 import textwrap
 import os
+import urllib
 
 from lxml import etree
 from lxml import html
@@ -17,22 +18,6 @@ logging.basicConfig(
     level=logging.WARNING,
     format='%(asctime)-15s [%(levelname)s] %(funcName)s: %(message)s',
 )
-
-def main():
-    if len(sys.argv) != 2:
-        if len(sys.argv) < 2:
-            print('Error: Not enough arguments provided. Please provide a search term.')
-            return
-        else:
-            print('Error: Too many arguments provided.')
-            return
-    
-    query_string = sys.argv[1]
-    if query_string == '--news':
-        get_wiki_current_events()
-    else:
-        get_wiki_search(query_string)
-
 
 def is_paragraph_empty(paragraph):
     return True if paragraph.strip() == '' else False
@@ -49,17 +34,21 @@ def get_wiki_search(query_string):
         for infobox in infoboxes:
             infobox.getparent().remove(infobox)
         paragraphs = page_html.xpath('//div[@id="toc"]/preceding::p')
+        paragraph_text_list = [TAB]
         for paragraph in paragraphs:
             styles = paragraph.xpath('./descendant::style')
             for junk_data in styles:
                 junk_data.getparent().remove(junk_data)
             paragraph_text = ''.join(paragraph.xpath('./descendant-or-self::*/text()'))
             if not is_paragraph_empty(paragraph_text):
-                print(f'{"".join(paragraph_text.rstrip())}\n')
+                paragraph_text_list.extend(paragraph_text.rstrip())
+                paragraph_text_list.append('\n\n' + TAB)
 
-        user_response = input('Open wikipedia page or quit? (o/q): ')
-        if user_response == 'o':
-            webbrowser.open(search_url)
+        paragraph_text_list.pop()
+        paragraph_text_list.extend(['\n\n', 'URL: ', 'https://' + urllib.parse.quote(search_url.replace('https://', ''))])
+        final = "".join(paragraph_text_list)
+        os.system(f'echo "{final}" | less')
+
     else:
         print(f'Recieved {r.status_code} response code.')
 
@@ -77,8 +66,8 @@ def get_wiki_current_events():
             print()
         on_going_data = ''.join(on_going.xpath("./descendant-or-self::*/text()"))
         on_going_data = on_going_data.replace('\n','\n' + TAB)
-        print(f'Ongoing: {on_going_data}')   
-        print()      
+        print(f'Ongoing: {on_going_data}')
+        print()
 
         date = page_html.xpath('//span[@class="summary"]/text()')
         date = date[0] + date[1]
@@ -110,12 +99,23 @@ def get_nested_items_helper(branch, indent):
         for topic in topics:
             get_nested_items(topic, indent)
     else:
-        # print(f"{TAB * indent}{''.join(branch.xpath( './descendant-or-self::*/text()'))}")
         print('\n'.join(textwrap.wrap(''.join(branch.xpath( './descendant-or-self::*/text()')), TERMINAL_WIDTH, initial_indent=TAB * (indent + 1), subsequent_indent=TAB * indent)))
         input()
-        
-    
 
+def main():
+    if len(sys.argv) != 2:
+        if len(sys.argv) < 2:
+            print('Error: Not enough arguments provided. Please provide a search term.')
+            return
+        else:
+            print('Error: Too many arguments provided.')
+            return
+    
+    query_string = sys.argv[1]
+    if query_string == '--news':
+        get_wiki_current_events()
+    else:
+        get_wiki_search(query_string)
 
 if __name__ == '__main__':
     main()
