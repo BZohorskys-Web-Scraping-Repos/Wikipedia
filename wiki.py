@@ -53,13 +53,13 @@ def get_wiki_search(query_string):
     else:
         print(f'Recieved {r.status_code} response code.')
 
-def get_wiki_current_events():   
+def get_wiki_current_events():
     r = requests.get(CURRENT_EVENTS)
     if r.status_code == 200:
         page_html = etree.HTML(r.content)
         quick_facts = page_html.xpath('//div[@role="region"]/ul/li')
         on_going = page_html.xpath('//div[@role="region"]//div[contains(@class,"hlist")]')[0]
-        
+
         print('Topics in the News:')
         for idx, fact in enumerate(quick_facts):
             text = ''.join(fact.xpath('./descendant-or-self::*/text()'))
@@ -72,17 +72,16 @@ def get_wiki_current_events():
 
         date = page_html.xpath('//span[@class="summary"]/text()')
         date = date[0] + date[1]
-        
+
         event = page_html.xpath('//div[@class="vevent"]')[0]
         description = event.xpath('.//div[@class="description"]')[0]
         paragraphs = description.xpath('./p')
         topics = description.xpath('./ul')
-        if not paragraphs:
-            return
-        print(f'{date}:')
-        for idx in range(len(paragraphs)):
-            print(f"{TAB}{''.join(paragraphs[idx].xpath('./descendant-or-self::*/text()'))}", end='')
-            get_nested_items(topics[idx], 1)
+        if paragraphs:
+            print(f'{date}:')
+            for idx in range(len(paragraphs)):
+                print(f"{TAB}{''.join(paragraphs[idx].xpath('./descendant-or-self::*/text()'))}", end='')
+                get_nested_items(topics[idx], 1)
 
     user_response = input('Open wikipedia page or quit? (o/q): ')
     if user_response == 'o':
@@ -111,7 +110,7 @@ def main():
         else:
             print('Error: Too many arguments provided.')
             return
-    
+
     query_string = sys.argv[1]
     if query_string == '--news':
         get_wiki_current_events()
