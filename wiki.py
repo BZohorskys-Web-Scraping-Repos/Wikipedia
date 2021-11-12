@@ -15,14 +15,16 @@ TAB = '  '
 TERMINAL_WIDTH = os.get_terminal_size().columns
 
 logging.basicConfig(
-    level=logging.WARNING,
+    level=logging.WARN,
     format='%(asctime)-15s [%(levelname)s] %(funcName)s: %(message)s',
 )
 
 def is_paragraph_empty(paragraph):
+    logging.info(locals())
     return True if paragraph.strip() == '' else False
 
 def get_wiki_search(query_string):
+    logging.info(locals())
     search_url = ''.join([SITE, query_string])
     r = requests.get(search_url)
     if r.status_code == 200:
@@ -48,12 +50,14 @@ def get_wiki_search(query_string):
         paragraph_text_list.pop()
         paragraph_text_list.extend(['\n\n', 'https://' + urllib.parse.quote(search_url.replace('https://', ''))])
         final = "".join(paragraph_text_list)
+        # I need to setup curses since this vim thing causes bugs with quotes and other nonsense
         os.system(f'echo "{final}" | vim - -R')
 
     else:
         print(f'Recieved {r.status_code} response code.')
 
 def get_wiki_current_events():
+    logging.info(locals())
     r = requests.get(CURRENT_EVENTS)
     if r.status_code == 200:
         page_html = etree.HTML(r.content)
@@ -73,8 +77,7 @@ def get_wiki_current_events():
         date = page_html.xpath('//span[@class="summary"]/text()')
         date = date[0] + date[1]
 
-        event = page_html.xpath('//div[@class="vevent"]')[0]
-        description = event.xpath('.//div[@class="description"]')[0]
+        description = page_html.xpath('//div[@class="current-events-content description"]')[0]
         paragraphs = description.xpath('./p')
         topics = description.xpath('./ul')
         if paragraphs:
@@ -88,11 +91,13 @@ def get_wiki_current_events():
         webbrowser.open(CURRENT_EVENTS)
 
 def get_nested_items(topic, indent):
+    logging.info(locals())
     tree = topic.xpath('./li')
     for branch in tree:
         get_nested_items_helper(branch, indent + 1)
 
 def get_nested_items_helper(branch, indent):
+    logging.info(locals())
     if(branch.xpath('./ul')):
         print(f"{TAB * indent}{''.join(branch.xpath('./a/text()'))}")
         topics = branch.xpath('./ul')
