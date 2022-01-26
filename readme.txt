@@ -20,25 +20,12 @@ Run Project
 -----------
     Activate virtual environment
     In the root directory:
-        python wiki.py <search argument>
+        python launcher.py <search argument>
+        Or
+        python launcher.py --news
 
-
-Build Project
+Distribute Project
 -------------
-    Dev Test
-    ++++++++
-        Activate virtual environment
-        Run setup.py
-            > python setup.py develop
-        An egg directory should have been created
-        Test Tool
-            > wiki <search argument>
-
-    Create .tar.gz file which can be install with pip
-    +++++++++++++++++++++++++++++++++++++++++++++++++
-        Activate virtual environment
-        Run setup.py
-            > python setup.py sdist bdist_wheel
-        Test Tool
-            Deactivate virtualenv
-            pip install <path to .tar.gz file in dist dir>
+    Activate virtual environment
+    In the root directory:
+        pyinstaller launcher.py --name wiki --onefile
