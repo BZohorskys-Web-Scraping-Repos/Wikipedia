@@ -23,13 +23,13 @@ logging.basicConfig(
 
 async def get_webpage(url):
     async with aiohttp.ClientSession() as session:
-            async with session.get(url) as response:
-                code = response.status
-                html = await response.text()
-                return {'code':code, 'html':html}
+        async with session.get(url) as response:
+            code = response.status
+            html = await response.text()
+            return {'code':code, 'html':html}
 
 async def idleAnimation(task):
-    for fram in itertools.cycle(r'-\|/-\|/'):
+    for frame in itertools.cycle(r'-\|/-\|/'):
         if task.done():
             print('\r', '', sep='', end='', flush=True)
             break;
