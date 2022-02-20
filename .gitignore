@@ -5,4 +5,3 @@ __pycache__/
 bpz_wiki.egg-info/
 build/
 dist/
-wiki.spec
